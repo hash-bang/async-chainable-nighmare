@@ -153,9 +153,9 @@ module.exports = function() {
 	// }}}
 
 	// nightmareWait() {{{
-	this._plugins['nightmare.wait'] = function(params) {
+	this._plugins['nightmareWait'] = function(params) {
 		var self = this;
-		self._context.wait.wait(params.selector).then(function() {
+		self._context.nightmare.wait(params.selector).then(function() {
 			self._execute();
 		}, self._execute); // Errors get passed to self._execute()
 	};
@@ -165,7 +165,7 @@ module.exports = function() {
 		if (calledAs != 'string') throw new Error('Unknown async-chainable-nightmare#nightmareSelector() style: ' + calledAs);
 
 		this._struct.push({
-			type: 'nightmare.selector',
+			type: 'nightmareWait',
 			selector: arguments[0],
 		});
 
