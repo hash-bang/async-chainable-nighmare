@@ -1,0 +1,35 @@
+{
+  "name": "async-chainable-nightmare",
+  "version": "0.0.0",
+  "description": "Plugin for async-chainable that wraps Nightmare",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hash-bang/async-chainable-nightmare"
+  },
+  "license": "MIT",
+  "keywords": [
+    "async",
+    "async-chainable",
+    "nightmare"
+  ],
+  "author": "Matt Carter <m@ttcarter.com>",
+  "bugs": {
+    "url": "https://github.com/hash-bang/async-chainable-nightmare/issues"
+  },
+  "homepage": "https://github.com/hash-bang/async-chainable-nightmare",
+  "scripts": {
+    "coverage": "istanbul cover node_modules/.bin/_mocha",
+    "test": "mocha test"
+  },
+  "devDependencies": {
+    "async-chainable": "^1.7.15",
+    "chai": "^1.10.0",
+    "istanbul": "^0.3.5",
+    "mocha": "^2.1.0",
+    "mocha-istanbul": "^0.2.0"
+  },
+  "dependencies": {
+    "nightmare": "^2.3.4"
+  }
+}
