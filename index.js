@@ -1,4 +1,5 @@
 var nightmare = require('nightmare');
+var q = require('q');
 
 module.exports = function() {
 	// nightmare() {{{
@@ -126,9 +127,15 @@ module.exports = function() {
 	// nightmareType() {{{
 	this._plugins['nightmareType'] = function(params) {
 		var self = this;
-		self._context.nightmare.type(params.selector, params.text).then(function() {
-			self._execute();
-		}, self._execute); // Errors get passed to self._execute()
+
+		q.resolve(self._context.nightmare.type(params.selector, params.text))
+			.then(function(res) {
+				self._execute();
+			}, function(err) {
+				// Ignore weird errors we get back from Nightmare
+				if (err == "Cannot read property 'blur' of null") return self._execute();
+				self._execute(err);
+			});
 	};
 
 	this.nightmareType = function(selector, text) {
