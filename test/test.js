@@ -30,14 +30,13 @@ describe('async-chainable-nightmare - basic test', function() {
 			.then(function(cb) { mlog.log('All done'); cb() })
 			.end(function(err) {
 				expect(err).to.be.not.ok;
-				this.evalResult = this.result;
-				console.log('Async-Chainable-NightMare ended with: ' + this.result);
+				evalResult = this.result;
 				finish();
 			});
 	});
 
 	it('should have completed with the correct result', function() {
-		expect(evalResult).to.be.equal('foo');
+		expect(evalResult).to.match(/^About [0-9,]+ results/);
 	});
 });
 

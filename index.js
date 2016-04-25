@@ -44,11 +44,15 @@ module.exports = function() {
 	// }}}
 
 	// nightmareEvaluate() {{{
-	this._plugins['nightmareEvaluate'] = function() {
+	this._plugins['nightmareEvaluate'] = function(params) {
 		var self = this;
-		var result = self._context.nightmare.evaluate(params.callback);
-		if (params.key) self[params.key] = result;
-		self._execute();
+		q.resolve(self._context.nightmare.evaluate(params.callback))
+			.then(function(res) {
+				if (params.key) self._context[params.key] = res;
+				self._execute();
+			}, function(err) {
+				self._execute(err);
+			});
 	};
 
 	this.nightmareEvaluate = function() {
@@ -63,14 +67,14 @@ module.exports = function() {
 				break;
 			case 'string,function':
 				this._struct.push({
-					type: 'nightmareClick',
+					type: 'nightmareEvaluate',
 					key: arguments[0],
 					callback: arguments[1],
 				});
 				break;
 			case 'function':
 				this._struct.push({
-					type: 'nightmareClick',
+					type: 'nightmareEvaluate',
 					callback: arguments[0],
 				});
 				break;
