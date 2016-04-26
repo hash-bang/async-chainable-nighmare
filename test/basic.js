@@ -39,4 +39,3 @@ describe('async-chainable-nightmare - basic test', function() {
 		expect(evalResult).to.match(/^About [0-9,]+ results/);
 	});
 });
-

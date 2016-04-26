@@ -110,19 +110,32 @@ module.exports = function() {
 	// nightmareScreenshot() {{{
 	this._plugins['nightmareScreenshot'] = function(params) {
 		var self = this;
-		self._context.nightmare.screenshot(params.path).then(function() {
-			self._execute();
-		}, self._execute); // Errors get passed to self._execute()
+		q.resolve(self._context.nightmare.screenshot(params.path))
+			.then(function(res) {
+				if (params.toBuffer) self._context.screenshot = res;
+				self._execute();
+			}, self._execute); // Errors get passed to self._execute()
 	};
 
 	this.nightmareScreenshot = function(path) {
 		var calledAs = this._getOverload(arguments);
-		if (calledAs != 'string') throw new Error('Unknown async-chainable-nightmare#nightmareScreenshot() style: ' + calledAs);
 
-		this._struct.push({
-			type: 'nightmareScreenshot',
-			path: arguments[0],
-		});
+		switch(calledAs) {
+			case '': // Return a buffer
+				this._struct.push({
+					type: 'nightmareScreenshot',
+					toBuffer: true,
+				});
+				break;
+			case 'string': // Save to a file
+				this._struct.push({
+					type: 'nightmareScreenshot',
+					path: arguments[0],
+				});
+				break;
+			default:
+				throw new Error('Unknown async-chainable-nightmare#nightmareScreenshot() style: ' + calledAs);
+		}
 
 		return this;
 	};

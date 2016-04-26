@@ -57,6 +57,6 @@ async-chainable-nightmare provides the following functions:
 | `nightmareClick(selector)`           | Simulate a mouse click event on a given selector                                                                                |
 | `nightmareEvaluate([key], function)` | Execute the given function within the context of the page and, optionally, store the result in the named key within the context |
 | `nightmareGoto(url)`                 | Navigate the Nightmare instance to the given URL                                                                                |
-| `nightmareScreenshot(path)`          | Take a screenshot and store it in the given path                                                                                |
+| `nightmareScreenshot([path])`        | Take a screenshot. if path is provided that file will be written (must end in `.png` / `.pdf`), if no path is provided a buffer is returned into the `screenshot` key within the context |
 | `nightmareType(selector, text)`      | Enter the given text into the input box specified by the selector                                                               |
 | `nightmareWait(selector | timeout)`  | Wait for a given selector to appear or a given number of milliseconds                                                           |
