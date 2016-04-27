@@ -43,6 +43,28 @@ module.exports = function() {
 	};
 	// }}}
 
+	// nightmareEnd() {{{
+	this._plugins['nightmareEnd'] = function(params) {
+		var self = this;
+		q.resolve(self._context.nightmare.end())
+			.then(function() {
+				delete self._context.nightmare;
+				self._execute();
+			}, self._execute); // Errors get passed to self._execute()
+	};
+
+	this.nightmareEnd = function(selector) {
+		var calledAs = this._getOverload(arguments);
+		if (calledAs != '') throw new Error('Unknown async-chainable-nightmare#nightmareClick() style: ' + calledAs);
+
+		this._struct.push({
+			type: 'nightmareEnd',
+		});
+
+		return this;
+	};
+	// }}}
+
 	// nightmareEvaluate() {{{
 	this._plugins['nightmareEvaluate'] = function(params) {
 		var self = this;
