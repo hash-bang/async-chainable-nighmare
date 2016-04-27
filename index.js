@@ -129,6 +129,42 @@ module.exports = function() {
 	};
 	// }}}
 
+	// nightmarePdf() {{{
+	this._plugins['nightmarePdf'] = function(params) {
+		var self = this;
+		q.resolve(self._context.nightmare.pdf(params.path, params.options))
+			.then(function() {
+				self._execute();
+			}, self._execute); // Errors get passed to self._execute()
+	};
+
+	this.nightmarePdf = function(path) {
+		var calledAs = this._getOverload(arguments);
+
+		switch(calledAs) {
+			case 'string': // Save to a file
+				this._struct.push({
+					type: 'nightmareScreenshot',
+					path: arguments[0],
+				});
+				break;
+			case 'string,object': // Save to a file + options
+				this._struct.push({
+					type: 'nightmareScreenshot',
+					path: arguments[0],
+					options: arguments[1],
+				});
+				break;
+			default:
+				throw new Error('Unknown async-chainable-nightmare#nightmarePdf() style: ' + calledAs);
+		}
+
+		return this;
+	};
+
+	this.nightmarePDF = this.nightmarePdf; // Common misspelling
+	// }}}
+
 	// nightmareScreenshot() {{{
 	this._plugins['nightmareScreenshot'] = function(params) {
 		var self = this;
