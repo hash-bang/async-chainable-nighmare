@@ -10,7 +10,7 @@ This plugin patches many of the somewhat odd behaviours of the Nightmare module 
 
 
 	var asyncChainable = require('async-chainable');
-	var asyncChainableNightmare = require('..');
+	var asyncChainableNightmare = require('async-chainable-nightmare');
 
 	asyncChainable()
 		.use(asyncChainableNightmare)
@@ -38,11 +38,7 @@ This plugin patches many of the somewhat odd behaviours of the Nightmare module 
 		.then(function(cb) { console.log('Evaluated'); cb() })
 
 		.then(function(cb) { console.log('All done'); cb() })
-		.end(function(err) {
-			expect(err).to.be.not.ok;
-			evalResult = this.result;
-			finish();
-		});
+		.end();
 
 
 API
