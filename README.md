@@ -16,6 +16,11 @@ This plugin patches many of the somewhat odd behaviours of the Nightmare module 
 		.use(asyncChainableNightmare)
 		.nightmare({show: true})
 
+		.nightmareOn('console', function() {
+			var args = Array.prototype.slice.call(arguments, 0);
+			console.log('Page Console>', args);
+		})
+
 		.nightmareGoto('http://google.com')
 		.then(function(cb) { console.log('Navigated'); cb() })
 
@@ -53,6 +58,7 @@ async-chainable-nightmare provides the following functions:
 | `nightmareClick(selector)`           | Simulate a mouse click event on a given selector                                                                                |
 | `nightmareEvaluate([key], function)` | Execute the given function within the context of the page and, optionally, store the result in the named key within the context |
 | `nightmareGoto(url)`                 | Navigate the Nightmare instance to the given URL                                                                                |
+| `nightmareOn(event, function)`       | Bind to a Nightmare event                                                                                                       |
 | `nightmarePdf(path, [options])`      | Take a PDF screenshot and save it to the given file. [PDF options are specified here](https://github.com/atom/electron/blob/v0.35.2/docs/api/web-contents.md#webcontentsprinttopdfoptions-callback). |
 | `nightmarePDF(path, [options])`      | Alias of `nightmarePdf`.                                                                                                        |
 | `nightmareScreenshot([path])`        | Take a screenshot. if path is provided that file will be written (must end in `.png`), if no path is provided a buffer is returned into the `screenshot` key within the context |

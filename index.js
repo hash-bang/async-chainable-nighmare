@@ -129,6 +129,38 @@ module.exports = function() {
 	};
 	// }}}
 
+	// nightmareOn() {{{
+	this._plugins['nightmareOn'] = function(params) {
+		var self = this;
+		self._context.nightmare.on(params.binding, params.callback);
+		self._execute();
+	};
+
+	this.nightmareOn = function(url) {
+		var calledAs = this._getOverload(arguments);
+
+		switch (calledAs) {
+			case '':
+				// Pass
+				break;
+			case 'string':
+				throw new Error('Cannot pass just an event into async-chainable-nightmare#nightmareOn. Require at least a string and a function to run');
+				break;
+			case 'string,function':
+				this._struct.push({
+					type: 'nightmareOn',
+					binding: arguments[0],
+					callback: arguments[1],
+				});
+				break;
+			default:
+				throw new Error('Unknown async-chainable-nightmare#nightmareOn() style: ' + calledAs);
+		}
+
+		return this;
+	};
+	// }}}
+
 	// nightmarePdf() {{{
 	this._plugins['nightmarePdf'] = function(params) {
 		var self = this;
