@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "async-chainable": "^1.7.15",
+    "async-chainable-log": "^1.1.0",
     "chai": "^1.10.0",
     "istanbul": "^0.3.5",
     "mocha": "^2.1.0",

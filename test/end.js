@@ -1,4 +1,5 @@
 var asyncChainable = require('async-chainable');
+var asyncChainableLog = require('async-chainable-log');
 var asyncChainableNightmare = require('..');
 var expect = require('chai').expect;
 var mlog = require('mocha-logger');
@@ -9,13 +10,15 @@ describe('async-chainable-nightmare - force .end() call', function() {
 
 		asyncChainable()
 			.use(asyncChainableNightmare)
+			.use(asyncChainableLog)
+			.logDefaults(mlog.log)
 			.nightmare({show: true})
 			.nightmareGoto('http://google.com')
-			.then(function(cb) { mlog.log('Navigated'); cb() })
-			.then(function(cb) { mlog.log('Force call to end()'); cb() })
+			.log('Navigated')
+			.log('Force call to end()')
 			.nightmareEnd()
-			.then(function(cb) { mlog.log('Ended'); cb() })
-			.then(function(cb) { mlog.log('All done'); cb() })
+			.log('Ended')
+			.log('All done')
 			.end(function(err) {
 				expect(err).to.be.not.ok;
 				expect(this.nightmare).to.not.be.ok;
