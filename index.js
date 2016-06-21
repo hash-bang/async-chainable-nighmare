@@ -176,13 +176,13 @@ module.exports = function() {
 		switch(calledAs) {
 			case 'string': // Save to a file
 				this._struct.push({
-					type: 'nightmareScreenshot',
+					type: 'nightmarePdf',
 					path: arguments[0],
 				});
 				break;
 			case 'string,object': // Save to a file + options
 				this._struct.push({
-					type: 'nightmareScreenshot',
+					type: 'nightmarePdf',
 					path: arguments[0],
 					options: arguments[1],
 				});
