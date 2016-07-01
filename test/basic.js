@@ -22,8 +22,8 @@ describe('async-chainable-nightmare - basic test', function() {
 			.log('Clicking `input[name="btnK"]')
 			.nightmareClick('input[name="btnK"]')
 			.log('Clicked')
-			.log('Waiting for `.content`')
-			.nightmareWait('.content')
+			.log('Waiting for `#resultStats`')
+			.nightmareWait('#resultStats')
 			.log('Main content area found')
 			.log('Evaluating `#resultStats`')
 			.nightmareEvaluate('result', function () {
