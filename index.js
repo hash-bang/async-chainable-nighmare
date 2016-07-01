@@ -264,7 +264,11 @@ module.exports = function() {
 		var self = this;
 		self._context.nightmare.wait(params.selector).then(function() {
 			self._execute();
-		}, self._execute); // Errors get passed to self._execute()
+		}, self._execute) // Errors get passed to self._execute()
+		.catch(function(err) {
+			if (err && err.toString() == 'TypeError: this._finalize is not a function') return self._execute('NIGHTMARE-TIMEOUT');
+			self._execute(err || 'NIGHTMARE-ERROR');
+		});
 	};
 
 	this.nightmareWait = function(selector) {

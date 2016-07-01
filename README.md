@@ -64,3 +64,22 @@ async-chainable-nightmare provides the following functions:
 | `nightmareScreenshot([path])`        | Take a screenshot. if path is provided that file will be written (must end in `.png`), if no path is provided a buffer is returned into the `screenshot` key within the context |
 | `nightmareType(selector, text)`      | Enter the given text into the input box specified by the selector                                                               |
 | `nightmareWait(selector | timeout)`  | Wait for a given selector to appear or a given number of milliseconds                                                           |
+
+
+Timeouts
+--------
+You can set the default Nightmare timeouts by passing `waitTimeout` (default: 30s), `gotoTimeout` (default: 30s), `loadTimeout` (default: infinite) into the initial `nightmare(options)` call.
+
+Should any subsequent event timeout the `NIGHTMARE-TIMEOUT` error response will be passed to `end()`.
+
+For example in the following code the module is asked to load a page and wait for an element which will never load. Since the timeout is set for 1 second Nightmare will give up after that time and immediately throw an error, skipping to the `end()` call.
+
+		asyncChainable()
+			.use(require('async-chainable-nightmare'))
+			.nightmare({waitTimeout: 1000}) // Give up waiting after 1 second
+			.nightmareGoto('http://somewhere.com')
+			.nightmareWait('#someImpossibleElement')
+			... Do other things ...
+			.end(function(err) {
+				// Err will be 'NIGHTMARE-TIMEOUT' here
+			});
