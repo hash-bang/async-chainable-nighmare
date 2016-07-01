@@ -23,17 +23,17 @@
     "test": "mocha test"
   },
   "devDependencies": {
-    "async-chainable": "^1.7.15",
+    "async-chainable": "^1.8.1",
     "async-chainable-log": "^1.1.0",
-    "chai": "^1.10.0",
-    "istanbul": "^0.3.5",
-    "mocha": "^2.1.0",
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.4",
+    "mocha": "^2.5.3",
     "mocha-istanbul": "^0.2.0",
     "mocha-logger": "^1.0.3",
     "temp": "^0.8.3"
   },
   "dependencies": {
-    "nightmare": "^2.3.4",
+    "nightmare": "^2.5.2",
     "q": "^1.4.1"
   }
 }
