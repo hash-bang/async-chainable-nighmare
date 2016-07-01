@@ -13,7 +13,9 @@ describe('async-chainable-nightmare - console event test', function() {
 			.use(asyncChainableNightmare)
 			.use(asyncChainableLog)
 			.logDefaults(mlog.log)
+			.log('Init')
 			.nightmare({show: true})
+			.log('Nagivate')
 			.nightmareOn('console', function() {
 				var args = Array.prototype.slice.call(arguments, 0);
 				consoleOutput.push(args);
