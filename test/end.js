@@ -27,4 +27,27 @@ describe('async-chainable-nightmare - force .end() call', function() {
 				finish();
 			});
 	});
+
+	it('should close nightmare if .end() is called before .nightmareEnd()', function(finish) {
+		this.timeout(30 * 1000);
+
+		asyncChainable()
+			.use(asyncChainableNightmare)
+			.use(asyncChainableLog)
+			.logDefaults(mlog.log)
+			.log('Init')
+			.nightmare({show: true})
+			.log('Nagivate')
+			.nightmareGoto('http://google.com')
+			.log('Navigated')
+			.log('Intentional error injection')
+			.then(function(next) { next('This is a fake error') })
+			.nightmareEnd()
+			.log('Ended (this shouldnt happen)')
+			.end(function(err) {
+				expect(err).to.be.equal('This is a fake error');
+				expect(this.nightmare).to.be.not.ok;
+				finish();
+			});
+	});
 });

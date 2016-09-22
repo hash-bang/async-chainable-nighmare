@@ -1,3 +1,4 @@
+var debug = require('debug')('async-chainable-nightmare');
 var nightmare = require('nightmare');
 var q = require('q');
 
@@ -20,6 +21,22 @@ module.exports = function() {
 
 		return this;
 	},
+
+	// Setup end call to correctly terminate Nightmare instance
+	this.hook('end', function(next) {
+		var self = this;
+		if (this._context.nightmare) { // Not correctly terminated
+			debug('WARNING: Killing orphaned Nightmare process - .end() called before .endNightmare()');
+			q.resolve(this._context.nightmare.end())
+				.then(function() {
+					delete self._context.nightmare;
+					debug('Nightmare process destructed');
+					next();
+				}, next); // Termination errors get passed to next anyway
+		} else { // Ended Nightmare correctly anyway
+			next();
+		}
+	});
 	// }}}
 
 	// nightmareClick() {{{
@@ -48,6 +65,7 @@ module.exports = function() {
 		var self = this;
 		q.resolve(self._context.nightmare.end())
 			.then(function() {
+				debug('Nightmare process destructed');
 				delete self._context.nightmare;
 				self._execute();
 			}, self._execute); // Errors get passed to self._execute()

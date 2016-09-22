@@ -9,41 +9,43 @@ This plugin patches many of the somewhat odd behaviours of the Nightmare module 
 * Some inconsiquential error messages that would otherwise abort the sequence chain are ignoerd (e.g. typing into an input box that doesn't raise the `blur` event)
 
 
-	var asyncChainable = require('async-chainable');
-	var asyncChainableNightmare = require('async-chainable-nightmare');
+```javascript
+var asyncChainable = require('async-chainable');
+var asyncChainableNightmare = require('async-chainable-nightmare');
 
-	asyncChainable()
-		.use(asyncChainableNightmare)
-		.nightmare({show: true})
+asyncChainable()
+	.use(asyncChainableNightmare)
+	.nightmare({show: true})
 
-		.nightmareOn('console', function() {
-			var args = Array.prototype.slice.call(arguments, 0);
-			console.log('Page Console>', args);
-		})
+	.nightmareOn('console', function() {
+		var args = Array.prototype.slice.call(arguments, 0);
+		console.log('Page Console>', args);
+	})
 
-		.nightmareGoto('http://google.com')
-		.then(function(cb) { console.log('Navigated'); cb() })
+	.nightmareGoto('http://google.com')
+	.then(function(cb) { console.log('Navigated'); cb() })
 
-		.then(function(cb) { console.log('Typing into `input[name="q"]`'); cb() })
-		.nightmareType('input[name="q"]', 'github async-chainable-nightmare')
-		.then(function(cb) { console.log('Typed'); cb() })
+	.then(function(cb) { console.log('Typing into `input[name="q"]`'); cb() })
+	.nightmareType('input[name="q"]', 'github async-chainable-nightmare')
+	.then(function(cb) { console.log('Typed'); cb() })
 
-		.then(function(cb) { console.log('Clicking `input[name="btnK"]'); cb() })
-		.nightmareClick('input[name="btnK"]')
-		.then(function(cb) { console.log('Clicked'); cb() })
+	.then(function(cb) { console.log('Clicking `input[name="btnK"]'); cb() })
+	.nightmareClick('input[name="btnK"]')
+	.then(function(cb) { console.log('Clicked'); cb() })
 
-		.then(function(cb) { console.log('Waiting for `.content`'); cb() })
-		.nightmareWait('.content')
-		.then(function(cb) { console.log('Main content area found'); cb() })
+	.then(function(cb) { console.log('Waiting for `.content`'); cb() })
+	.nightmareWait('.content')
+	.then(function(cb) { console.log('Main content area found'); cb() })
 
-		.then(function(cb) { console.log('Evaluating `#resultStats`'); cb() })
-		.nightmareEvaluate('result', function () {
-			return document.querySelector('#resultStats').innerHTML;
-		})
-		.then(function(cb) { console.log('Evaluated'); cb() })
+	.then(function(cb) { console.log('Evaluating `#resultStats`'); cb() })
+	.nightmareEvaluate('result', function () {
+		return document.querySelector('#resultStats').innerHTML;
+	})
+	.then(function(cb) { console.log('Evaluated'); cb() })
 
-		.then(function(cb) { console.log('All done'); cb() })
-		.end();
+	.then(function(cb) { console.log('All done'); cb() })
+	.end();
+```
 
 
 API
@@ -64,6 +66,13 @@ async-chainable-nightmare provides the following functions:
 | `nightmareScreenshot([path])`        | Take a screenshot. if path is provided that file will be written (must end in `.png`), if no path is provided a buffer is returned into the `screenshot` key within the context |
 | `nightmareType(selector, text)`      | Enter the given text into the input box specified by the selector                                                               |
 | `nightmareWait(selector | timeout)`  | Wait for a given selector to appear or a given number of milliseconds                                                           |
+
+
+Debugging
+---------
+This module uses [debug](https://github.com/visionmedia/debug) for internal debugging so setting the `DEBUG=async-chainable-nightmare` environment variable will show additional messages:
+
+	DEBUG=async-chainable-nightmare node myScript.js
 
 
 Timeouts

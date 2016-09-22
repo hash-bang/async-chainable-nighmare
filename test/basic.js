@@ -33,6 +33,7 @@ describe('async-chainable-nightmare - basic test', function() {
 			})
 			.log('Evaluated')
 			.log('All done')
+			.nightmareEnd()
 			.end(function(err) {
 				expect(err).to.be.not.ok;
 				evalResult = this.result;
