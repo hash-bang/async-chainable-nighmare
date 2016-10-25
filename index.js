@@ -1,3 +1,4 @@
+var argy = require('argy');
 var debug = require('debug')('async-chainable-nightmare');
 var nightmare = require('nightmare');
 var q = require('q');
@@ -11,13 +12,21 @@ module.exports = function() {
 	};
 
 	this.nightmare = function(options) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != '' && calledAs != 'object') throw new Error('Unknown async-chainable-nightmare#nightmare() style: ' + calledAs);
+		var chain = this;
 
-		this._struct.push({
-			type: 'nightmareNightmare',
-			options: arguments[0],
-		});
+		argy(arguments)
+			.ifForm('', function() {
+				chain._struct.push({type: 'nightmareNightmare'});
+			})
+			.ifForm('object', function(settings) {
+				chain._struct.push({
+					type: 'nightmareNightmare',
+					options: settings,
+				});
+			})
+			.ifFormElse(function(form) {
+				throw new Error('Unknown async-chainable-nightmare#nightmare() style: ' + form);
+			});
 
 		return this;
 	},
@@ -47,17 +56,14 @@ module.exports = function() {
 		}, self._execute); // Errors get passed to self._execute()
 	};
 
-	this.nightmareClick = function(selector) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != 'string') throw new Error('Unknown async-chainable-nightmare#nightmareClick() style: ' + calledAs);
-
+	this.nightmareClick = argy('string', function(selector) {
 		this._struct.push({
 			type: 'nightmareClick',
-			selector: arguments[0],
+			selector: selector,
 		});
 
 		return this;
-	};
+	});
 	// }}}
 
 	// nightmareEnd() {{{
@@ -71,10 +77,7 @@ module.exports = function() {
 			}, self._execute); // Errors get passed to self._execute()
 	};
 
-	this.nightmareEnd = function(selector) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != '') throw new Error('Unknown async-chainable-nightmare#nightmareClick() style: ' + calledAs);
-
+	this.nightmareEnd = function() {
 		this._struct.push({
 			type: 'nightmareEnd',
 		});
@@ -96,31 +99,29 @@ module.exports = function() {
 	};
 
 	this.nightmareEvaluate = function() {
-		var calledAs = this._getOverload(arguments);
+		var chain = this;
 
-		switch (calledAs) {
-			case '':
-				// Pass
-				break;
-			case 'string':
+		argy(arguments)
+			.ifForm('', function() {})
+			.ifForm('string', function(key) {
 				throw new Error('Cannot pass just a key into async-chainable-nightmare#nightmareEvaluate. Require at least a function to run');
-				break;
-			case 'string,function':
-				this._struct.push({
+			})
+			.ifForm('string function', function(key, func) {
+				chain._struct.push({
 					type: 'nightmareEvaluate',
-					key: arguments[0],
-					callback: arguments[1],
+					key: key,
+					callback: func,
 				});
-				break;
-			case 'function':
-				this._struct.push({
+			})
+			.ifForm('function', function(func) {
+				chain._struct.push({
 					type: 'nightmareEvaluate',
-					callback: arguments[0],
+					callback: func,
 				});
-				break;
-			default:
-				throw new Error('Unknown async-chainable-nightmare#nightmareEvaluate() style: ' + calledAs);
-		}
+			})
+			.ifFormElse(function(form) {
+				throw new Error('Unknown async-chainable-nightmare#nightmareEvaluate() style: ' + form);
+			});
 
 		return this;
 	};
@@ -134,17 +135,14 @@ module.exports = function() {
 		}, self._execute); // Errors get passed to self._execute()
 	};
 
-	this.nightmareGoto = function(url) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != 'string') throw new Error('Unknown async-chainable-nightmare#nightmareGoto() style: ' + calledAs);
-
+	this.nightmareGoto = argy('string', function(url) {
 		this._struct.push({
 			type: 'nightmareGoto',
-			url: arguments[0],
+			url: url,
 		});
 
 		return this;
-	};
+	});
 	// }}}
 
 	// nightmareOn() {{{
@@ -155,25 +153,23 @@ module.exports = function() {
 	};
 
 	this.nightmareOn = function(url) {
-		var calledAs = this._getOverload(arguments);
+		var chain = this;
 
-		switch (calledAs) {
-			case '':
-				// Pass
-				break;
-			case 'string':
+		argy(arguments)
+			.ifForm('', function() {})
+			.ifForm('string', function(hook) {
 				throw new Error('Cannot pass just an event into async-chainable-nightmare#nightmareOn. Require at least a string and a function to run');
-				break;
-			case 'string,function':
-				this._struct.push({
+			})
+			.ifForm('string function', function(hook, callback) {
+				chain._struct.push({
 					type: 'nightmareOn',
-					binding: arguments[0],
-					callback: arguments[1],
+					binding: hook,
+					callback: callback,
 				});
-				break;
-			default:
-				throw new Error('Unknown async-chainable-nightmare#nightmareOn() style: ' + calledAs);
-		}
+			})
+			.ifFormElse(function(form) {
+				throw new Error('Unknown async-chainable-nightmare#nightmareOn() style: ' + form);
+			});
 
 		return this;
 	};
@@ -188,29 +184,15 @@ module.exports = function() {
 			}, self._execute); // Errors get passed to self._execute()
 	};
 
-	this.nightmarePdf = function(path) {
-		var calledAs = this._getOverload(arguments);
-
-		switch(calledAs) {
-			case 'string': // Save to a file
-				this._struct.push({
-					type: 'nightmarePdf',
-					path: arguments[0],
-				});
-				break;
-			case 'string,object': // Save to a file + options
-				this._struct.push({
-					type: 'nightmarePdf',
-					path: arguments[0],
-					options: arguments[1],
-				});
-				break;
-			default:
-				throw new Error('Unknown async-chainable-nightmare#nightmarePdf() style: ' + calledAs);
-		}
+	this.nightmarePdf = argy('string [object]', function(path, options) {
+		this._struct.push({
+			type: 'nightmarePdf',
+			path: path,
+			options: options,
+		});
 
 		return this;
-	};
+	});
 
 	this.nightmarePDF = this.nightmarePdf; // Common misspelling
 	// }}}
@@ -226,24 +208,24 @@ module.exports = function() {
 	};
 
 	this.nightmareScreenshot = function(path) {
-		var calledAs = this._getOverload(arguments);
+		var chain = this;
 
-		switch(calledAs) {
-			case '': // Return a buffer
-				this._struct.push({
+		argy(arguments)
+			.ifForm('', function() { // Return a buffer
+				chain._struct.push({
 					type: 'nightmareScreenshot',
 					toBuffer: true,
 				});
-				break;
-			case 'string': // Save to a file
-				this._struct.push({
+			})
+			.ifForm('string', function(path) { // Save to a file
+				chain._struct.push({
 					type: 'nightmareScreenshot',
-					path: arguments[0],
+					path: path,
 				});
-				break;
-			default:
-				throw new Error('Unknown async-chainable-nightmare#nightmareScreenshot() style: ' + calledAs);
-		}
+			})
+			.ifFormElse(function(form) {
+				throw new Error('Unknown async-chainable-nightmare#nightmareScreenshot() style: ' + form);
+			});
 
 		return this;
 	};
@@ -258,23 +240,20 @@ module.exports = function() {
 				self._execute();
 			}, function(err) {
 				// Ignore weird errors we get back from Nightmare
-				if (err == "Cannot read property 'blur' of null") return self._execute();
+				if (/^Cannot read property '(blur|focus)' of null$/.test(err)) return self._execute();
 				self._execute(err);
 			});
 	};
 
-	this.nightmareType = function(selector, text) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != 'string,string') throw new Error('Unknown async-chainable-nightmare#nightmareType() style: ' + calledAs);
-
+	this.nightmareType = argy('string string', function(selector, text) {
 		this._struct.push({
 			type: 'nightmareType',
-			path: arguments[0],
-			text: arguments[1],
+			selector: selector,
+			text: text,
 		});
 
 		return this;
-	};
+	});
 	// }}}
 
 	// nightmareWait() {{{
@@ -289,16 +268,13 @@ module.exports = function() {
 		});
 	};
 
-	this.nightmareWait = function(selector) {
-		var calledAs = this._getOverload(arguments);
-		if (calledAs != 'string') throw new Error('Unknown async-chainable-nightmare#nightmareSelector() style: ' + calledAs);
-
+	this.nightmareWait = argy('string', function(selector) {
 		this._struct.push({
 			type: 'nightmareWait',
-			selector: arguments[0],
+			selector: selector,
 		});
 
 		return this;
-	};
+	});
 	// }}}
 };
